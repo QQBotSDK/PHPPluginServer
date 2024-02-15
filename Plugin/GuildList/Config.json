@@ -1,0 +1,18 @@
+{
+    "plugin":{
+        "config":{
+            "isopen":false,
+            "name":"GuildList",
+            "author":"书迷",
+            "version":"V1.0.0"
+        },
+        "listenings":[
+            {
+                "name":"AT_MESSAGE_CREATE"
+            },
+            {
+                "name":"MESSAGE_CREATE"
+            }
+        ]
+    }
+}
