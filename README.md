@@ -3,7 +3,7 @@
 # PHPQQ机器人框架-插件端
 
 [![Language](https://img.shields.io/badge/language-php-green.svg?style=plastic)](https://www.php.net/)
-[![License](https://img.shields.io/badge/license-MIT-orange.svg?style=plastic)](https://github.com/QQBotSDK/PHPPulginServer/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-Apache-orange.svg?style=plastic)](https://github.com/QQBotSDK/PHPPulginServer/blob/master/LICENSE)
 ![PHP](https://img.shields.io/badge/php-8.0%2B-blue)
 
 _✨ 基于 [机器人开放平台API](https://bot.q.qq.com/wiki/develop/api/) 实现的机器人框架 ✨_
