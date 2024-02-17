@@ -9,25 +9,6 @@
 // | Date: 2024年02月14日
 // +----------------------------------------------------------------------
 
-function GetPluginList(){
-    //加载Plugin下的所有的插件
-    $list = glob('./Plugin/*');
-    $i=0;
-    foreach($list as $file){
-        $config = file_get_contents($file.'/Config.json');//引入插件配置文件
-        $config_data = json_decode($config);//解析配置文件
-    	$i++;
-        //判断插件是否开启
-        if($config_data->plugin->config->isopen==true){
-            $isopen="开启";
-        }else{
-            $isopen="关闭";
-        }
-    	$plugin.="[插件".$i."]".$config_data->plugin->config->name."-".$isopen."\n";
-    }
-    return $plugin;
-}
-
 function GetPluginInfo($id){
     //加载Plugin下的所有的插件
     $list = glob('./Plugin/*');
@@ -53,6 +34,25 @@ function GetPluginInfo($id){
     }
     if(!$plugin){
         $plugin="插件ID错误";
+    }
+    return $plugin;
+}
+
+function GetPluginList(){
+    //加载Plugin下的所有的插件
+    $list = glob('./Plugin/*');
+    $i=0;
+    foreach($list as $file){
+        $config = file_get_contents($file.'/Config.json');//引入插件配置文件
+        $config_data = json_decode($config);//解析配置文件
+    	$i++;
+        //判断插件是否开启
+        if($config_data->plugin->config->isopen==true){
+            $isopen="开启";
+        }else{
+            $isopen="关闭";
+        }
+    	$plugin.="[插件".$i."]".$config_data->plugin->config->name."-".$isopen."\n";
     }
     return $plugin;
 }
