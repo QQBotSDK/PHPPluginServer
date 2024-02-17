@@ -1,5 +1,5 @@
-<?php
-$Plugin_Key='test';
-$Admin_User='admin';
-$Admin_Password='123456';
+<?php 
+$Plugin_Key="code";
+$Admin_Username="admin";
+$Admin_Password="123456"; 
 ?>

@@ -11,7 +11,7 @@
 error_reporting(1);//屏蔽报错
 include './Config.php';//配置文件
 include './Version.php';//版本文件
-include './Class/Function.php';//函数库，默认为空
+include './Class/Function.php';//函数库
 include './Class/Http.Class.php';//Http操作库
 include './Class/Secret.Class.php';//Secret获取工具
 include './Class/Bot.Class.php';//BotApi库
@@ -62,7 +62,7 @@ $guilduser=new GuildUserAPI($url,$headers);
 //引入GroupAPI类
 $bot=new BotAPI($url,$headers);
 //引入Mrakdown类
-$md=new MrakDown();
+$md=new MarkDown();
 
 //重置$authorization和$headers等敏感数据避免恶意插件窃取数据
 $authorization='';
