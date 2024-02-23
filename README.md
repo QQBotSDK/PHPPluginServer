@@ -71,7 +71,7 @@ _✨ 为开发者提供一个易使用、开发效率高的开发框架 ✨_
 感谢感谢以下开发者对 `PHPQQ机器人框架-插件端` 作出的贡献：
 
 <a href="https://github.com/QQBotSDK/PHPPluginServer/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=QQBotSDK/PHPPluginServer/r" />
+  <img src="https://contrib.rocks/image?repo=QQBotSDK/PHPPluginServer" />
 </a>
 
 # 加入官方频道
