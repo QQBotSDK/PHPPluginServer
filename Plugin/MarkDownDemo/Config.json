@@ -3,8 +3,12 @@
         "config":{
             "isopen":false,
             "name":"MrakDown",
+            "info":"A MrakDown Demo Plugin",
             "author":"书迷",
-            "version":"V1.0.0"
+            "version":"V1.0.0",
+            "pluginadmin":false,
+            "pluginadminurl":"",
+            "mysql":false
         },
         "listenings":[
             {

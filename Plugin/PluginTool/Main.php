@@ -101,68 +101,68 @@ function SetPlugin($id,$mode){
 if($event=='GROUP_AT_MESSAGE_CREATE'){//群消息
     if($data->data->content_1=='PluginList'){
         $plugin=GetPluginList();
-        $return=$group->Send_Group_Message($group_openid,"\nPluginList：\n".$plugin."\nPluginInfo PluginID",$msg_id);//发送消息
+        $return=$group->Send_Group_Message($data->data->group_openid,"\nPluginList：\n".$plugin."\nPluginInfo PluginID",$data->data->msg_id);//发送消息
         if($return['return']['code']=='400'){
-            $return=$group->Send_Group_Message($group_openid,"\n消息发送失败",$msg_id);//发送消息
+            $return=$group->Send_Group_Message($data->data->group_openid,"\n消息发送失败",$data->data->msg_id);//发送消息
         }
     }elseif($data->data->content_3=='PluginInfo'){
         if(isset($data->data->content_2[1])){
             $plugin=GetPluginInfo($data->data->content_2[1]);
-            $return=$group->Send_Group_Message($group_openid,$plugin."\n开启:SetPlugin PluginID Open\n关闭:SetPlugin PluginID Close",$msg_id);//发送消息
+            $return=$group->Send_Group_Message($data->data->group_openid,$plugin."\n开启:SetPlugin PluginID Open\n关闭:SetPlugin PluginID Close",$data->data->msg_id);//发送消息
             if($return['return']['code']=='400'){
-                $return=$group->Send_Group_Message($group_openid,"\n消息发送失败",$msg_id);//发送消息
+                $return=$group->Send_Group_Message($data->data->group_openid,"\n消息发送失败",$data->data->msg_id);//发送消息
             }
         }else{
-            $return=$group->Send_Group_Message($group_openid,"请提供PluginID",$msg_id);//发送消息
+            $return=$group->Send_Group_Message($data->data->group_openid,"请提供PluginID",$data->data->msg_id);//发送消息
             if($return['return']['code']=='400'){
-                $return=$group->Send_Group_Message($group_openid,"\n消息发送失败",$msg_id);//发送消息
+                $return=$group->Send_Group_Message($data->data->group_openid,"\n消息发送失败",$data->data->msg_id);//发送消息
             }
         }
     }elseif($data->data->content_3=='SetPlugin'){
         if(isset($data->data->content_2[1]) and isset($data->data->content_2[2])){
             $plugin=SetPlugin($data->data->content_2[1],$data->data->content_2[2]);
-            $return=$group->Send_Group_Message($group_openid,$plugin,$msg_id);//发送消息
+            $return=$group->Send_Group_Message($data->data->group_openid,$plugin,$data->data->msg_id);//发送消息
             if($return['return']['code']=='400'){
-                $return=$group->Send_Group_Message($group_openid,"\n消息发送失败",$msg_id);//发送消息
+                $return=$group->Send_Group_Message($data->data->group_openid,"\n消息发送失败",$data->data->msg_id);//发送消息
             }
         }else{
-            $return=$group->Send_Group_Message($group_openid,"请提供PluginID和Mode",$msg_id);//发送消息
+            $return=$group->Send_Group_Message($data->data->group_openid,"请提供PluginID和Mode",$data->data->msg_id);//发送消息
             if($return['return']['code']=='400'){
-                $return=$group->Send_Group_Message($group_openid,"\n消息发送失败",$msg_id);//发送消息
+                $return=$group->Send_Group_Message($data->data->group_openid,"\n消息发送失败",$data->data->msg_id);//发送消息
             }
         }
     }
 }elseif($event=='AT_MESSAGE_CREATE' or $event=='MESSAGE_CREATE'){//频道消息
     if($data->data->content_1=='PluginList'){
         $plugin=GetPluginList();
-        $return=$guild->Send_Guild_Message($channel_id,"PluginList：\n".$plugin."\nPluginInfo PluginID",$msg_id);//发送消息
+        $return=$guild->Send_Guild_Message($data->data->channel_id,"PluginList：\n".$plugin."\nPluginInfo PluginID",$data->data->msg_id);//发送消息
         if($return['return']['code']=='400'){
-            $return=$guild->Send_Guild_Message($channel_id,"\n消息发送失败",$msg_id);//发送消息
+            $return=$guild->Send_Guild_Message($data->data->channel_id,"\n消息发送失败",$data->data->msg_id);//发送消息
         }
     }elseif($data->data->content_3=='PluginInfo'){
         if(isset($data->data->content_2[1])){
             $plugin=GetPluginInfo($data->data->content_2[1]);
-            $return=$guild->Send_Guild_Message($channel_id,$plugin."\n开启:SetPlugin PluginID Open\n关闭:SetPlugin PluginID Close",$msg_id);//发送消息
+            $return=$guild->Send_Guild_Message($data->data->channel_id,$plugin."\n开启:SetPlugin PluginID Open\n关闭:SetPlugin PluginID Close",$data->data->msg_id);//发送消息
             if($return['return']['code']=='400'){
-                $return=$guild->Send_Guild_Message($channel_id,"\n消息发送失败",$msg_id);//发送消息
+                $return=$guild->Send_Guild_Message($data->data->channel_id,"\n消息发送失败",$data->data->msg_id);//发送消息
             }
         }else{
-            $return=$guild->Send_Guild_Message($channel_id,"请提供PluginID",$msg_id);//发送消息
+            $return=$guild->Send_Guild_Message($data->data->channel_id,"请提供PluginID",$data->data->msg_id);//发送消息
             if($return['return']['code']=='400'){
-                $return=$guild->Send_Guild_Message($channel_id,"\n消息发送失败",$msg_id);//发送消息
+                $return=$guild->Send_Guild_Message($data->data->channel_id,"\n消息发送失败",$data->data->msg_id);//发送消息
             }
         }
     }elseif($data->data->content_3=='SetPlugin'){
         if(isset($data->data->content_2[1]) and isset($data->data->content_2[2])){
             $plugin=SetPlugin($data->data->content_2[1],$data->data->content_2[2]);
-            $return=$guild->Send_Guild_Message($channel_id,$plugin,$msg_id);//发送消息
+            $return=$guild->Send_Guild_Message($data->data->channel_id,$plugin,$data->data->msg_id);//发送消息
             if($return['return']['code']=='400'){
-                $return=$guild->Send_Guild_Message($channel_id,"\n消息发送失败",$msg_id);//发送消息
+                $return=$guild->Send_Guild_Message($data->data->channel_id,"\n消息发送失败",$data->data->msg_id);//发送消息
             }
         }else{
-            $return=$guild->Send_Guild_Message($channel_id,"请提供PluginID和Mode",$msg_id);//发送消息
+            $return=$guild->Send_Guild_Message($data->data->channel_id,"请提供PluginID和Mode",$data->data->msg_id);//发送消息
             if($return['return']['code']=='400'){
-                $return=$guild->Send_Guild_Message($channel_id,"\n消息发送失败",$msg_id);//发送消息
+                $return=$guild->Send_Guild_Message($data->data->channel_id,"\n消息发送失败",$data->data->msg_id);//发送消息
             }
         }
     }

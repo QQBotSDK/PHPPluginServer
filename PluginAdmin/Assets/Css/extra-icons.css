@@ -5,8 +5,8 @@
 	font-family: boxicons;
 	font-weight: 400;
 	font-style: normal;
-	src: url(../fonts/boxicons.eot);
-	src: url(../fonts/boxicons.eot) format('embedded-opentype'), url(../fonts/boxicons.woff2) format('woff2'), url(../fonts/boxicons.woff) format('woff'), url(../fonts/boxicons.ttf) format('truetype'), url(../fonts/boxicons.svg?#boxicons) format('svg')
+	src: url(../Fonts/boxicons.eot);
+	src: url(../Fonts/boxicons.eot) format('embedded-opentype'), url(../Fonts/boxicons.woff2) format('woff2'), url(../Fonts/boxicons.woff) format('woff'), url(../Fonts/boxicons.ttf) format('truetype'), url(../Fonts/boxicons.svg?#boxicons) format('svg')
 }
 
 .bx {

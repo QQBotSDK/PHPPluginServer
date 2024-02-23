@@ -13,101 +13,234 @@ include '../Class/Function.php';//函数库
 
 @$page=$_GET["page"];
 
-function GetPluginInfo($id){
-    //加载Plugin下的所有的插件
-    $list = glob('./Plugin/*');
-    $i=0;
-    foreach($list as $file){
-        $config = file_get_contents($file.'/Config.json');//引入插件配置文件
-        $config_data = json_decode($config);//解析配置文件
-    	$i++;
-    	if($i==$id){//匹配上了
-            //判断插件是否开启
-            if($config_data->plugin->config->isopen==true){
-                $isopen="开启";
-            }else{
-                $isopen="关闭";
-            }
-            //获取权限列表
-            foreach ($config_data->plugin->listenings as $listening) {
-                $eventname=Get_Event_Name($listening->name);
-                $listeningevent.=$eventname."\n";
-            }
-        	$plugin="[插件".$config_data->plugin->config->name."]\nID:".$i."\n状态:".$isopen."\nListingEvent:\n".$listeningevent;
-        	}
-    }
-    if(!$plugin){
-        $plugin="插件ID错误";
-    }
-    return $plugin;
+//
+if(!$page){
+    $page=1;
+}elseif($page<=0){
+    $page=1;
 }
 
-function GetAllPage(){
-    //加载Plugin下的所有的插件
-    $list = glob('../Plugin/*');
-    $count=count($list);
-    if($count>10){
-        $allpage=ceil($count/10);
-    }else{
-        $allpage=1;
-    }
-    return $allpage;
-}
-function GetPluginList($page){
-    //加载Plugin下的所有的插件
-    $list = glob('../Plugin/*');
-    $count=count($list);
-    //echo count($list);
-    if($count>10){
-        if(!$page or $page==1){
-            $min_i=1;
-            $max_i=10;
+// function GetAllPage(){
+//     //加载Plugin下的所有的插件
+//     $list = glob('../Plugin/*');
+//     $count=count($list);
+//     if($count>10){
+//         $allpage=ceil($count/10);
+//     }else{
+//         $allpage=1;
+//     }
+//     return $allpage;
+// }
+// function GetPluginList($page){
+//     //加载Plugin下的所有的插件
+//     $list = glob('../Plugin/*');
+//     $count=count($list);
+//     //echo count($list);
+//     if($count>10){
+//         if(!$page or $page==1){
+//             $min_i=1;
+//             $max_i=10;
+//         }else{
+//             if($page>1){
+//                 $min_i=($page - 1)*10 + 1;
+//                 $max_i=$page*10;
+//             }else{
+//                 $min_i=1;
+//                 $max_i=10;
+//             }
+//         }
+//     }else{
+//         $min_i=1;
+//         $max_i=10;
+//     }
+//     $i=0;
+//     foreach($list as $flie){
+//         $i++;
+//         if($i>=$min_i and $i<=$max_i){
+//             $config = file_get_contents($flie.'/Config.json');//引入插件配置文件
+//             $config_data = json_decode($config);//解析配置文件
+//         	$plugin[]=(object)array("i"=>$i,"flie"=>$flie,"config"=>$config_data->plugin->config,"listenings"=>$config_data->plugin->listenings);
+//         }
+//     }
+//     return (object)$plugin;
+// }
+
+//$pluginlist=GetPluginList($page);
+$pluginlist=$config->Get_Plugin_List_Page($page);
+if($pluginlist['code']==401){
+    $pluginlist['allpage']=1;
+    $html=<<<HTML
+          <tr>
+            <td>暂无插件，请先导入</td>
+          </tr>
+HTML;
+}elseif($pluginlist['code']==200){
+    $pluginlist1=$pluginlist['value'];
+    foreach($pluginlist1 as $plugin){
+        $plugin=(object)$plugin;
+        $i=$plugin->id;
+        $flie=$plugin->path;
+        //判断插件是否开启
+        if($plugin->isopen=='true'){
+            $isopen="开启";
+            $dotext="关闭";
+            $do='Close';
         }else{
-            if($page>1){
-                $min_i=($page - 1)*10 + 1;
-                $max_i=$page*10;
+            $isopen="关闭";
+            $dotext="开启";
+            $do='Open';
+        }
+        //获取权限列表
+        $listeningeventlist='';
+        $listeningeventjs1='';
+        $listeningeventjs2='';
+        foreach ($config->Get_Plugin_Event_List($i)["value"] as $listening) {
+            $listening=(object)$listening;
+            $eventname=Get_Event_Name($listening->event);
+            if($listening->auth=='true'){
+                $checked=' checked';
             }else{
-                $min_i=1;
-                $max_i=10;
+                $checked='';
             }
+            if($listening->event=='mysql'){
+                $eventname='Mysql数据库权限';
+                $tips='<span style="color:red">*敏感权限，请确定您可以信任该插件*</span>';
+            }else{
+                $tips='';
+            }
+            $listeningeventlist.=<<<HTML
+<div class="form-check form-switch"> 
+    <input class="form-check-input" type="checkbox" id="{$i}_{$listening->event}"{$checked}> 
+    <label class="form-check-label" for="flexSwitchCheckChecked">{$eventname}{$tips}</label> 
+</div>
+HTML;
+            $listeningeventjs1.=<<<JS
+    var {$listening->event}_{$i}=$("#{$i}_{$listening->event}").get(0).checked;
+    //console.log({$listening->event}_{$i})
+    
+JS;
+            $listeningeventjs2.=<<<JS
++"&{$listening->event}="+{$listening->event}_{$i}
+JS;
+            //$listeningeventlist.=$eventname."<br>";
         }
-    }else{
-        $min_i=1;
-        $max_i=10;
-    }
-    $i=0;
-    foreach($list as $flie){
-        $i++;
-        if($i>=$min_i and $i<=$max_i){
-            $config = file_get_contents($flie.'/Config.json');//引入插件配置文件
-            $config_data = json_decode($config);//解析配置文件
-        	$plugin[]=(object)array("i"=>$i,"flie"=>$flie,"config"=>$config_data->plugin->config,"listenings"=>$config_data->plugin->listenings);
+//         if($plugin->auth_mysql=='true'){
+//             $listeningeventlist.=<<<HTML
+// <div class="form-check form-switch"> 
+//     <input class="form-check-input" type="checkbox" id="{$i}_mysql" checked> 
+//     <label class="form-check-label" for="flexSwitchCheckChecked">Mysql数据库权限</label> 
+// </div>
+// HTML;
+//             $listeningeventjs1.=<<<JS
+//     var mysql_{$i}=$("#{$i}_mysql").get(0).checked;
+//     //console.log(mysql_{$i})
+    
+// JS;
+//             $listeningeventjs2.=<<<JS
+// +"&mysql="+mysql_{$i}
+// JS;
+//         }
+        if($plugin->pluginadmin=='true'){
+            $pluginadmin=' href="./PluginAdmin.php?id='.$i.'"';
+        }else{
+            $pluginadmin=<<<HTML
+  href="#" onclick="Show_Error('该插件没有独立管理页面')"
+HTML;
         }
+        $html.=<<<HTML
+          <tr>
+            <td>{$plugin->name}</td>
+            <td>{$flie}</td>
+            <td>{$plugin->author}</td>
+            <td>{$plugin->version}</td>
+            <td>
+              <a href="#" type="button" data-bs-toggle="modal" data-bs-target="#Modal-{$i}">插件权限管理</a>
+            </td>
+            <td>{$isopen}</td>
+            <td>
+              <div class="dropdown">
+                <button class="btn btn-sm btn-filter dropdown-toggle dropdown-toggle-nocaret"
+                  type="button" data-bs-toggle="dropdown">
+                  <i class="bi bi-three-dots"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#" onclick="SetPlugin('{$i}','{$do}')">{$dotext}插件</a></li>
+                  <li><a class="dropdown-item" {$pluginadmin}>插件配置</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="Show_Error('功能暂时没有开发完成')">卸载插件</a></li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="Modal-{$i}" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">插件[{$plugin->name}]的权限列表</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">{$listeningeventlist}</div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">关闭</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close" data-bs-toggle="modal" data-bs-target="#Modal-1-{$i}">保存配置</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Modal-1 -->
+        <div class="modal fade" id="Modal-1-{$i}" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">[{$plugin->name}]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">您确定要更改这些权限的配置吗</div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">取消</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close" onclick="SetPluginEvent_{$i}()">确定</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script>
+        function SetPluginEvent_{$i}() {
+           	$listeningeventjs1
+        	$.ajax({
+        		type : "GET",
+        		url : "./AdminApi.php?mode=SetPluginEvent&pluginid="+"{$i}"{$listeningeventjs2},
+        		dataType:"json",
+        		timeout: 15000, //ajax请求超时时间15s
+        		success : function(data) {
+        		    if(data.code==200){
+            		    Show_Success('安装成功');
+            		    id=data.id;
+            		    stepper1.next();
+        		    }else{
+        		        Show_Error(data.message);
+        		    }
+        		},
+              error:function(res){
+                  Show_Error('云端数据读取失败！('+res.status+')');
+              }
+        	});
+        }
+        </script>
+HTML;
     }
-    return (object)$plugin;
+}else{
+    $pluginlist['allpage']=1;
+    $html=<<<HTML
+          <tr>
+            <td>异常</td>
+          </tr>
+HTML;
 }
 ?>
 <script>
-function Show_Success(message) {
-	Lobibox.notify('success', {
-		pauseDelayOnHover: true,
-		continueDelayOnInactiveTab: false,
-		position: 'top right',
-		icon: 'bi bi-check2-circle',
-		msg: message
-	});
-}
-
-function Show_Error(message) {
-	Lobibox.notify('error', {
-		pauseDelayOnHover: true,
-		continueDelayOnInactiveTab: false,
-		position: 'top right',
-		icon: 'bi bi-x-circle',
-		msg: message
-	});
-}
-
 function Jump() {
     window.location.replace("");
     window.event.returnValue=false;
@@ -172,7 +305,9 @@ function SetPlugin(id,do1) {
         </div>
         <div class="col-auto">
           <div class="d-flex align-items-center gap-2 justify-content-lg-end">
-            <button onclick="window.location.href='./UploadPlugin.php'" class="btn btn-primary px-4"><i class="bi bi-plus-lg me-2"></i>导入插件</button>
+            <button onclick="window.location.href='./PluginShop.php'" class="btn btn-primary px-4"><i class="bx bx-shopping-bag me-2"></i>插件商城</button>
+            <button onclick="window.location.href='./LoadPlugin.php'" class="btn btn-primary px-4" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="意思是加载已经位于插件目录但是列表内未载入的插件"><i class="bi bi-plus-lg me-2"></i>载入插件</button>
+            <button onclick="window.location.href='./UploadPlugin.php'" class="btn btn-primary px-4" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="意思是从您的设备中导入插件的安装包[ZIP格式]"><i class="bx bx-upload me-2"></i>导入插件</button>
           </div>
         </div>
       </div><!--end row-->
@@ -195,70 +330,7 @@ function SetPlugin(id,do1) {
                 </thead>
                 <tbody>
 <?php
-$pluginlist=GetPluginList($page);
-foreach($pluginlist as $plugin){
-    $i=$plugin->i;
-    $flie=str_replace('../Plugin/', '', $plugin->flie);
-    $config=$plugin->config;
-    //判断插件是否开启
-    if($config->isopen==true){
-        $isopen="开启";
-        $dotext="关闭";
-        $do='Close';
-    }else{
-        $isopen="关闭";
-        $dotext="开启";
-        $do='Open';
-    }
-    //获取权限列表
-    $listeningeventlist='';
-    foreach ($plugin->listenings as $listening) {
-        $eventname=Get_Event_Name($listening->name);
-        $listeningeventlist.=$eventname."<br>";
-    }
-    echo $html=<<<HTML
-                  <tr>
-                    <td>{$config->name}</td>
-                    <td>{$flie}</td>
-                    <td>{$config->author}</td>
-                    <td>{$config->version}</td>
-                    <td>
-                      <a href="#" type="button" data-bs-toggle="modal" data-bs-target="#Modal-{$i}">查看权限</a>
-                    </td>
-                    <td>{$isopen}</td>
-                    <td>
-                      <div class="dropdown">
-                        <button class="btn btn-sm btn-filter dropdown-toggle dropdown-toggle-nocaret"
-                          type="button" data-bs-toggle="dropdown">
-                          <i class="bi bi-three-dots"></i>
-                        </button>
-                        <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" href="#" onclick="SetPlugin('{$i}','{$do}')">{$dotext}插件</a></li>
-                          <!--<li><a class="dropdown-item" href="./PluginAdmin.php?id={$i}">插件配置</a></li>-->
-                          <li><a class="dropdown-item" href="#" onclick="Show_Error('功能暂时没有开发完成')">插件配置</a></li>
-                          <li><a class="dropdown-item" href="#" onclick="Show_Error('功能暂时没有开发完成')">卸载插件</a></li>
-                        </ul>
-                      </div>
-                    </td>
-                  </tr>
-                
-                <!-- Modal -->
-                <div class="modal fade" id="Modal-{$i}" tabindex="-1" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title">插件[{$config->name}]的权限列表</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">{$listeningeventlist}</div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">关闭</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-HTML;
-}
+echo$html;
 ?>
                 </tbody>
               </table>
@@ -266,7 +338,7 @@ HTML;
           </div>
             <div class="row">
               <div class="col-sm-12 col-md-12">
-                <div class="dataTables_info" id="example_info" role="status" aria-live="polite">当前为第<?php if(!$page) $page=1; echo$page;?>页/共<?php echo $allpage=GetAllPage(); ?>页</div>
+                <div class="dataTables_info" id="example_info" role="status" aria-live="polite">当前为第<?php echo$page;?>页/共<?php echo $allpage=$pluginlist['allpage']; ?>页</div>
               </div>
             </div>
             <div class="row">

@@ -11,34 +11,38 @@
 include './Head.php';//载入头文件
 ?>
 <script>
-function Show_Success(message) {
-	Lobibox.notify('success', {
-		pauseDelayOnHover: true,
-		continueDelayOnInactiveTab: false,
-		position: 'top right',
-		icon: 'bi bi-check2-circle',
-		msg: message
-	});
-}
-
-function Show_Error(message) {
-	Lobibox.notify('error', {
-		pauseDelayOnHover: true,
-		continueDelayOnInactiveTab: false,
-		position: 'top right',
-		icon: 'bi bi-x-circle',
-		msg: message
-	});
-}
-
-function UpdateSet() {
+function UpdateBaseSet() {
    	var key=$("#key").val();
    	if(key==''){
    	    Show_Error("请输入key~");
    	}else{
     	$.ajax({
     		type : "GET",
-    		url : "./AdminApi.php?mode=UpdateSet&key="+key,
+    		url : "./AdminApi.php?mode=UpdateBaseSet&key="+key,
+    		dataType:"json",
+    		timeout: 15000, //ajax请求超时时间15s
+    		success : function(data) {
+    		    if(data.code==200){
+        		    Show_Success('修改成功');
+    		    }else{
+    		        Show_Error(data.message);
+    		    }
+    		},
+          error:function(res){
+              Show_Error('云端数据读取失败！('+res.status+')');
+          }
+    	});
+   	}
+}
+
+function UpdateCodeSet() {
+   	var debug_mode=$("#debug_mode").val();
+   	if(debug_mode==''){
+   	    Show_Error("请选择debug_mode~");
+   	}else{
+    	$.ajax({
+    		type : "GET",
+    		url : "./AdminApi.php?mode=UpdateCodeSet&debug_mode="+debug_mode,
     		dataType:"json",
     		timeout: 15000, //ajax请求超时时间15s
     		success : function(data) {
@@ -75,25 +79,55 @@ function UpdateSet() {
       
 
         <div class="row">
-					<div class="col-xl-12">
-						<h6 class="mb-0 text-uppercase">基础配置</h6>
-						<hr>
-						<div class="card">
-							<div class="card-body">
-							    <label for="inputEmailAddress" class="form-label">APIKEY</label>
-								<div class="input-group mb-3">
-									<input id="key" type="text" class="form-control" placeholder="key" value='<?php echo $Plugin_Key;?>' aria-label="Username" aria-describedby="basic-addon1">
-								</div>
-                                <div class="col-12">
-                                  <div class="d-grid">
-                                    <button type="button" class="btn btn-primary" onclick="UpdateSet()">修改</button>
-                                  </div>
-                                </div>
-							</div>
+			<div class="col-xl-12">
+				<h6 class="mb-0 text-uppercase">基础配置</h6>
+				<hr>
+				<div class="card">
+					<div class="card-body">
+					    <label for="inputEmailAddress" class="form-label">APIKEY</label>
+						<div class="input-group mb-3">
+							<input id="key" type="text" class="form-control" placeholder="key" value='<?php echo $config->GetConfig('plugin_key');?>' aria-label="Username" aria-describedby="basic-addon1">
 						</div>
+                        <div class="col-12">
+                          <div class="d-grid">
+                            <button type="button" class="btn btn-primary" onclick="UpdateBaseSet()">修改</button>
+                          </div>
+                        </div>
 					</div>
 				</div>
-
+			</div>
+		</div>
+		
+        <div class="row">
+			<div class="col-xl-12">
+				<h6 class="mb-0 text-uppercase">开发者模式[如果不进行插件开发请勿修改此处配置]</h6>
+				<hr>
+				<div class="card">
+					<div class="card-body">
+                        <div class="input-group mb-3">
+							<label class="input-group-text" for="inputGroupSelect01">Debug模式</label>
+							<select class="form-select" id="debug_mode">
+<?php
+if($config->GetConfig('debug_mode')=='true'){
+     $true='selected=""';
+}else{
+     $false='selected=""';
+}
+?>
+								<option value="false" <?php echo $false; ?>>关闭</option>
+								<option value="true" <?php echo $true; ?>>开启</option>
+							</select>
+						</div>
+                        <div class="col-12">
+                          <div class="d-grid">
+                            <button type="button" class="btn btn-primary" onclick="UpdateCodeSet()">修改</button>
+                          </div>
+                        </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
     </div>
   </main>
   <!--end main wrapper-->

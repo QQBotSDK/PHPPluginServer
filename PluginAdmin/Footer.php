@@ -65,12 +65,38 @@
   <script src="./Assets/Js/index.js"></script>
   <script src="./Assets/Plugins/peity/jquery.peity.min.js"></script>
   
+  <script src="./Assets/Plugins/bs-stepper/js/bs-stepper.min.js"></script>
+	<script src="./Assets/Plugins/bs-stepper/js/main.js"></script>
 	
   <!--notification js -->
 	<script src="./Assets/Plugins/notifications/js/lobibox.min.js"></script>
 	<script src="./Assets/Plugins/notifications/js/notifications.min.js"></script>
+  <script src="https://cdn.staticfile.net/select2/4.1.0-rc.0/js/select2.min.js"></script>
+	<script src="./Assets/Plugins/select2/js/select2-custom.js"></script>
   <script>
     $(".data-attributes span").peity("donut")
+	</script>
+    <script>
+      $(document).ready(function () {
+        $("#show_hide_password a").on('click', function (event) {
+          event.preventDefault();
+          if ($('#show_hide_password input').attr("type") == "text") {
+            $('#show_hide_password input').attr('type', 'password');
+            $('#show_hide_password i').addClass("bi-eye-slash-fill");
+            $('#show_hide_password i').removeClass("bi-eye-fill");
+          } else if ($('#show_hide_password input').attr("type") == "password") {
+            $('#show_hide_password input').attr('type', 'text');
+            $('#show_hide_password i').removeClass("bi-eye-slash-fill");
+            $('#show_hide_password i').addClass("bi-eye-fill");
+          }
+        });
+      });
+    </script>
+  <script>
+		$(function () {
+			$('[data-bs-toggle="popover"]').popover();
+			$('[data-bs-toggle="tooltip"]').tooltip();
+		})
 	</script>
   <script src="./Assets/Js/main.js"></script>
 

@@ -11,8 +11,13 @@
 include './Head.php';//载入头文件
 include '../Version.php';//版本文件
 //加载Plugin下的所有的插件
-$list = glob('../Plugin/*');
-$PluginCount=count($list);
+// $list = glob('../Plugin/*');
+// $PluginCount=count($list);
+if($config->Get_Plugin_List()['value']){
+    $PluginCount=count($config->Get_Plugin_List()['value']);
+}else{
+    $PluginCount=0;
+}
 $LogCount=0;//临时
 ?>
 
@@ -60,7 +65,7 @@ $LogCount=0;//临时
 
         </div><!--end row-->
 
-          <div class="col-12 col-xl-12 col-xxl-3 d-flex">
+          <div class="col-12 col-xl-12 col-xxl-12 d-flex">
             <div class="card w-100 rounded-4">
               <div class="card-body">
                 <div class="d-flex align-items-start justify-content-between mb-3">

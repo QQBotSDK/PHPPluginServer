@@ -10,11 +10,11 @@
 // +----------------------------------------------------------------------
 //error_reporting(1);//屏蔽报错
 $mode=$_GET["mode"];
-include '../Config.php';//配置文件
+include("../Mysql/Mysql.php");//数据库链接
 if($mode!='Login'){
     /*验证Cookie*/
     if(isset($_COOKIE["Login_Token"])){
-        $cookie=hash('sha256',$Admin_Username.$Admin_Password);
+        $cookie=hash('sha256',$config->GetConfig('admin_username').$config->GetConfig('admin_password'));
         if($_COOKIE["Login_Token"]!=$cookie){
             $return = array('code' => 400,'message' => '请先登录1');
             exit(json_encode($return));
@@ -27,11 +27,10 @@ if($mode!='Login'){
 
 //逻辑部分
 if($mode=='Login'){
-    include '../Config.php';//载入配置文件
     $username=$_GET["username"];
     $password=$_GET["password"];
-    if($Admin_Username==$username and $Admin_Password==$password){
-        $cookie=hash('sha256',$Admin_Username.$Admin_Password);
+    if($config->GetConfig('admin_username')==$username and $config->GetConfig('admin_password')==hash('sha256',$password)){
+        $cookie=hash('sha256',$config->GetConfig('admin_username').$config->GetConfig('admin_password'));
         $return = array('code' => 200,'message' => '登录成功','cookie' => $cookie);
         exit(json_encode($return));
     }else{
@@ -39,80 +38,211 @@ if($mode=='Login'){
         exit(json_encode($return));
     }
 }elseif($mode=='SetPlugin'){
-    $id=$_GET["id"];
-    $do=$_GET["do"];
-    //加载Plugin下的所有的插件
-    $list = glob('../Plugin/*');
-    $i=0;
-    foreach($list as $file){
-        $config = file_get_contents($file.'/Config.json');//引入插件配置文件
-        $config_data = json_decode($config);//解析配置文件
-    	$i++;
-    	if($i==$id){//匹配上了
-            //判断插件是否开启
-            if($do=='Open'){
-                if($config_data->plugin->config->isopen==true){
-                    $code=401;
-                    $message="插件已经开启了";
+    @$id=$_GET["id"];
+    @$do=$_GET["do"];
+    //读取插件参数
+	$plugin=$config->GetPlugin_I(@$id);
+	if($plugin['code']==401){
+        $return = array('code' => 401,'message' => '插件不存在');
+        exit(json_encode($return));
+	}else{
+        if($do=='Open'){
+    	    if($plugin['value']['isopen']=='true'){
+                $return = array('code' => 401,'message' => '插件已经开启了');
+                exit(json_encode($return));
+    	    }else{
+                $update=$sql->update($prefix.'plugin')->key(array('isopen'))->value(array('true'))->clause(array('id'))->bind(array($id))->run(); 
+                if($update["status"]==false){
+                    $return = array('code' => 400,'message' => '数据库操作失败');
+                    exit(json_encode($return));
                 }else{
-                    $config_data->plugin->config->isopen=true;
-                    $myfile = fopen($file.'/Config.json', "w");
-                    $data = json_encode($config_data, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
-                    fwrite($myfile, $data);
-                    fclose($myfile);
-                    $code=200;
-                    $message="插件开启成功";
+                    //配置权限列表
+                    $sql->update($prefix.'plugin_event')->key(array('pluginauth'))->value(array('true'))->clause(array('pluginid'))->bind(array($id))->run();
+                    $return = array('code' => 200,'message' => '开启成功');
+                    exit(json_encode($return));
                 }
-            }elseif($do=='Close'){
-                if($config_data->plugin->config->isopen==false){
-                    $code=401;
-                    $message="插件已经关闭了";
+    	    }
+        }else{
+    	    if($plugin['value']['isopen']=='false'){
+                $return = array('code' => 401,'message' => '插件已经关闭了');
+                exit(json_encode($return));
+    	    }else{
+                $update=$sql->update($prefix.'plugin')->key(array('isopen'))->value(array('false'))->clause(array('id'))->bind(array($id))->run(); 
+                if($update["status"]==false){
+                    $return = array('code' => 400,'message' => '数据库操作失败');
+                    exit(json_encode($return));
                 }else{
-                    $config_data->plugin->config->isopen=false;
-                    $myfile = fopen($file.'/Config.json', "w");
-                    $data = json_encode($config_data, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
-                    fwrite($myfile, $data);
-                    fclose($myfile);
-                    $code=200;
-                    $message="插件关闭成功";
+                    //配置权限列表
+                    $sql->update($prefix.'plugin_event')->key(array('pluginauth'))->value(array('false'))->clause(array('pluginid'))->bind(array($id))->run();
+                    $return = array('code' => 200,'message' => '关闭成功');
+                    exit(json_encode($return));
                 }
-            }else{
-                $code=401;
-                $message="参数不合法";
-            }
-    	}
-    }
-    if(!$message){
-        $code=401;
-        $message="插件ID错误";
-    }
-    $return = array('code' => $code,'message' => $message);
-    exit(json_encode($return));
+    	    }
+        }
+	}
 }elseif($mode=='UpdateUserInfo'){
-    include '../Config.php';//载入配置文件
     $username=$_GET["username"];
     $oldpassword=$_GET["oldpassword"];
     $newpassword=$_GET["newpassword"];
-    if($Admin_Password==$oldpassword){
-        $myfile = fopen('../Config.php', "w");
-        $data = '<?php $Plugin_Key="'.$Plugin_Key.'";$Admin_Username="'.$username.'";$Admin_Password="'.$newpassword.'"; ?>';
-        fwrite($myfile, $data);
-        fclose($myfile);
-        $return = array('code' => 200,'message' => '修改成功');
-        exit(json_encode($return));
+    if($config->GetConfig('admin_password')==hash('sha256',$oldpassword)){
+        if(strlen($username)<4){
+            $return = array('code' => 400,'message' => '账户长度需要大于4位');
+            exit(json_encode($return));
+        }elseif(strlen($newpassword)<6){
+            $return = array('code' => 400,'message' => '新密码长度需要大于6位');
+            exit(json_encode($return));
+        }else{
+            if($username!=$config->GetConfig('admin_username')){
+                $update=$sql->update($prefix.'config')->key(array('value'))->value(array($username))->clause(array('keyname'))->bind(array('admin_username'))->run(); 
+                if($update["status"]==false){
+                    $return = array('code' => 400,'message' => '数据库操作失败1');
+                    exit(json_encode($return));
+                }
+            }
+            if($config->GetConfig('admin_password')!=hash('sha256',$newpassword)){
+                $update=$sql->update($prefix.'config')->key(array('value'))->value(array(hash('sha256',$newpassword)))->clause(array('keyname'))->bind(array('admin_password'))->run(); 
+                if($update["status"]==false){
+                    $return = array('code' => 400,'message' => '数据库操作失败2');
+                    exit(json_encode($return));
+                }
+            }
+            $return = array('code' => 200,'message' => '修改成功');
+            exit(json_encode($return));
+        }
     }else{
         $return = array('code' => 401,'message' => '原密码不正确');
         exit(json_encode($return));
     }
-}elseif($mode=='UpdateSet'){
-    include '../Config.php';//载入配置文件
+}elseif($mode=='UpdateBaseSet'){
     $key=$_GET["key"];
-    $myfile = fopen('../Config.php', "w");
-    $data = '<?php $Plugin_Key="'.$key.'";$Admin_Username="'.$Admin_Username.'";$Admin_Password="'.$Admin_Password.'"; ?>';
-    fwrite($myfile, $data);
-    fclose($myfile);
-    $return = array('code' => 200,'message' => '修改成功');
-    exit(json_encode($return));
+    if($config->GetConfig('plugin_key')!=$key){
+        $update=$sql->update($prefix.'config')->key(array('value'))->value(array($key))->clause(array('keyname'))->bind(array('plugin_key'))->run(); 
+        if($update["status"]==false){
+            $return = array('code' => 400,'message' => '数据库操作失败');
+            exit(json_encode($return));
+        }else{
+            $return = array('code' => 200,'message' => '修改成功');
+            exit(json_encode($return));
+        }
+    }else{
+        $return = array('code' => 400,'message' => '啥都没变');
+        exit(json_encode($return));
+    }
+}elseif($mode=='UpdateCodeSet'){
+    $debug_mode=$_GET["debug_mode"];
+    if($config->GetConfig('debug_mode')!=$debug_mode){
+        $update=$sql->update($prefix.'config')->key(array('value'))->value(array($debug_mode))->clause(array('keyname'))->bind(array('debug_mode'))->run(); 
+        if($update["status"]==false){
+            $return = array('code' => 400,'message' => '数据库操作失败');
+            exit(json_encode($return));
+        }else{
+            $return = array('code' => 200,'message' => '修改成功');
+            exit(json_encode($return));
+        }
+    }else{
+        $return = array('code' => 400,'message' => '啥都没变');
+        exit(json_encode($return));
+    }
+}elseif($mode=='InstallPlugin'){
+    $pluginpath=$_GET['pluginpath'];
+    if (file_exists('../Plugin/'.$pluginpath.'/Config.json')) {
+        //have
+        $config_flie = file_get_contents('../Plugin/'.$pluginpath.'/Config.json');//引入插件配置文件
+        $config_data = json_decode($config_flie);//解析配置文件
+    	$plugin=$config->GetPlugin_N($config_data->plugin->config->name);
+    	if($plugin['code']==401){
+            //获取权限列表-1
+            foreach ($config_data->plugin->listenings as $listening) {
+                @${$listening->name}=$_GET[$listening->name];
+                if(!@${$listening->name}){
+                    $return = array('code' => 400,'message' => '参数['.$listening->name.']缺失');
+                    exit(json_encode($return));
+                }
+            }
+            
+            //MYSQL权限
+            if($config_data->plugin->config->mysql==true){
+                @$mysql=$_GET['mysql'];
+                if(!@$mysql){
+                    $return = array('code' => 400,'message' => '参数[mysql]缺失');
+                    exit(json_encode($return));
+                }
+            }
+            
+            if($config_data->plugin->config->pluginadmin==true){
+                $pluginadmin='true';
+            }else{
+                $pluginadmin='false';
+            }
+    	    //导入插件
+            $result=$sql->insert($prefix.'plugin')->key(array('name','info','path','author','version','pluginadmin','pluginadminurl','auth_mysql','isopen'))->value(array($config_data->plugin->config->name,$config_data->plugin->config->info,$pluginpath,$config_data->plugin->config->author,$config_data->plugin->config->version,$pluginadmin,$config_data->plugin->config->pluginadminurl,$config_data->plugin->config->mysql,'false'))->run();
+            if($result["status"]==false){
+                $arr=array('code'=>"400",'msg'=>"数据库错误:插件数据写入异常");
+                exit (json_encode($arr));
+            }
+            $pluginid=$result["id"];
+    	    
+            //获取权限列表-2
+            foreach ($config_data->plugin->listenings as $listening) {
+                $sql->insert($prefix.'plugin_event')->key(array('pluginid','event','auth','pluginauth'))->value(array($pluginid,$listening->name,${$listening->name},'false'))->run();
+            }
+            
+            if(@$mysql){
+                $sql->insert($prefix.'plugin_event')->key(array('pluginid','event','auth','pluginauth'))->value(array($pluginid,'mysql',$mysql,'false'))->run();
+            }
+            
+            $return = array('code' => 200,'message' => '安装成功','id'=>$pluginid);
+            exit(json_encode($return));
+    	}else{
+            $return = array('code' => 400,'message' => '插件已经安装过了，不允许覆盖安装，如需要覆盖安装请选择[重载插件]');
+            exit(json_encode($return));
+    	}
+    }else{    
+        if (is_dir('../Plugin/'.$pluginpath)) {
+            $return = array('code' => 400,'message' => '插件没有Config配置文件');
+            exit(json_encode($return));
+        }else{
+            $return = array('code' => 400,'message' => '插件目录不存在');
+            exit(json_encode($return));
+        }
+    }
+}elseif($mode=='SetPluginEvent'){
+    $pluginid=$_GET['pluginid'];
+	$plugin=$config->GetPlugin_I($pluginid);
+	if($plugin['code']==200){
+        //获取权限列表
+        foreach ($config->Get_Plugin_Event_List($pluginid)["value"] as $listening) {
+            $listening=(object)$listening;
+            @${$listening->event}=$_GET[$listening->event];
+            if(!@${$listening->event}){
+                $return = array('code' => 400,'message' => '参数['.$listening->event.']缺失');
+                exit(json_encode($return));
+            }
+        }
+        
+        //MYSQL权限
+        // if($plugin['value']['auth_mysql']=='true'){
+        //     @$mysql=$_GET['mysql'];
+        //     if(!@$mysql){
+        //         $return = array('code' => 400,'message' => '参数[mysql]缺失');
+        //         exit(json_encode($return));
+        //     }else{
+        //         $sql->update($prefix.'plugin_event')->key(array('auth'))->value(array($mysql))->clause(array('pluginid','event'))->bind(array($pluginid,'mysql'))->run();
+        //     }
+        // }
+        
+        //配置权限列表
+        foreach ($config->Get_Plugin_Event_List($pluginid)["value"] as $listening) {
+            $listening=(object)$listening;
+            $sql->update($prefix.'plugin_event')->key(array('auth'))->value(array(${$listening->event}))->clause(array('pluginid','event'))->bind(array($pluginid,$listening->event))->run();
+        }
+        
+        $return = array('code' => 200,'message' => '修改成功');
+        exit(json_encode($return));
+	}else{
+        $return = array('code' => 400,'message' => '插件不存在');
+        exit(json_encode($return));
+	}
 }else{
     
 }

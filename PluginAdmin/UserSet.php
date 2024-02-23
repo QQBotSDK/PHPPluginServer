@@ -11,26 +11,6 @@
 include './Head.php';//载入头文件
 ?>
 <script>
-function Show_Success(message) {
-	Lobibox.notify('success', {
-		pauseDelayOnHover: true,
-		continueDelayOnInactiveTab: false,
-		position: 'top right',
-		icon: 'bi bi-check2-circle',
-		msg: message
-	});
-}
-
-function Show_Error(message) {
-	Lobibox.notify('error', {
-		pauseDelayOnHover: true,
-		continueDelayOnInactiveTab: false,
-		position: 'top right',
-		icon: 'bi bi-x-circle',
-		msg: message
-	});
-}
-
 function JumpLogin() {
     window.location.replace("./Login.php");
     window.event.returnValue=false;
@@ -103,7 +83,7 @@ function UpdateUserInfo() {
     							</div>
 							    <label for="inputChoosePassword" class="form-label">新Admin密码</label>
     							<div class="input-group mb-3" id="show_hide_password">
-    								<input type="password" class="form-control border-end-0" id="newpassword" placeholder="新密码"> 
+    								<input type="password" class="form-control border-end-0" id="newpassword" placeholder="新密码-不修改请填写原密码"> 
                                     <a href="javascript:;" class="input-group-text bg-transparent"><i class="bi bi-eye-slash-fill"></i></a>
     							</div>
                                 <div class="col-12">
@@ -120,22 +100,7 @@ function UpdateUserInfo() {
   </main>
   <!--end main wrapper-->
 
-    <script>
-      $(document).ready(function () {
-        $("#show_hide_password a").on('click', function (event) {
-          event.preventDefault();
-          if ($('#show_hide_password input').attr("type") == "text") {
-            $('#show_hide_password input').attr('type', 'password');
-            $('#show_hide_password i').addClass("bi-eye-slash-fill");
-            $('#show_hide_password i').removeClass("bi-eye-fill");
-          } else if ($('#show_hide_password input').attr("type") == "password") {
-            $('#show_hide_password input').attr('type', 'text');
-            $('#show_hide_password i').removeClass("bi-eye-slash-fill");
-            $('#show_hide_password i').addClass("bi-eye-fill");
-          }
-        });
-      });
-    </script>
+
 <?php
 include './Footer.php';//载入页尾文件
 ?>

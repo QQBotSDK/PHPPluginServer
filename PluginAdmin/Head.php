@@ -9,10 +9,10 @@
 // | Date: 2024年02月16日
 // +----------------------------------------------------------------------
 error_reporting(0);//屏蔽报错
-include '../Config.php';//配置文件
+include("../Mysql/Mysql.php");//数据库链接
 /*验证Cookie*/
 if(isset($_COOKIE["Login_Token"])){
-    $cookie=hash('sha256',$Admin_Username.$Admin_Password);
+    $cookie=hash('sha256',$config->GetConfig('admin_username').$config->GetConfig('admin_password'));
     if($_COOKIE["Login_Token"]!=$cookie){
         header("Location:./Login.php");
         exit;
@@ -25,7 +25,7 @@ if(isset($_COOKIE["Login_Token"])){
 $fliename=basename($_SERVER['SCRIPT_NAME']);
 if($fliename=='index.php'){
     $index="class='mm-active'";
-}elseif($fliename=='PluginList.php'){
+}elseif($fliename=='PluginList.php' or $fliename=='PluginAdmin.php'){
     $plugin="class='mm-active'";
     $pluginlist="class='mm-active'";
 }elseif($fliename=='Doc.php'){
@@ -39,14 +39,6 @@ if($fliename=='index.php'){
     $userset="class='mm-active'";
 }elseif($fliename=='Set.php'){
     $set="class='mm-active'";
-}elseif($fliename=='.php'){
-    $index="class='mm-active'";
-}elseif($fliename=='.php'){
-    $index="class='mm-active'";
-}elseif($fliename=='.php'){
-    $index="class='mm-active'";
-}elseif($fliename=='.php'){
-    $index="class='mm-active'";
 }else{
     //未知Page
 }
@@ -65,6 +57,12 @@ if($fliename=='index.php'){
   <link rel="stylesheet" type="text/css" href="./Assets/Plugins/metismenu/metisMenu.min.css">
   <link rel="stylesheet" type="text/css" href="./Assets/Plugins/metismenu/mm-vertical.css">
   <link rel="stylesheet" href="./Assets/Plugins/notifications/css/lobibox.min.css">
+  <link rel="stylesheet" href="./Assets/Css/extra-icons.css">
+  <link href="./Assets/Plugins/bs-stepper/css/bs-stepper.css" rel="stylesheet">
+  
+  
+  <link rel="stylesheet" href="https://cdn.staticfile.net/select2/4.1.0-rc.0/css/select2.min.css">
+  <link rel="stylesheet" href="https://cdn.staticfile.net/select2-bootstrap-5-theme/1.3.0/select2-bootstrap-5-theme.min.css">
   <!--bootstrap css-->
   <link href="./Assets/Css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
@@ -76,7 +74,27 @@ if($fliename=='index.php'){
   <link href="./Assets/Sass/semi-dark.css" rel="stylesheet">
   <link href="./Assets/Sass/bordered-theme.css" rel="stylesheet">
   <link href="./Assets/Sass/responsive.css" rel="stylesheet">
+<script>
+function Show_Success(message) {
+	Lobibox.notify('success', {
+		pauseDelayOnHover: true,
+		continueDelayOnInactiveTab: false,
+		position: 'top right',
+		icon: 'bi bi-check2-circle',
+		msg: message
+	});
+}
 
+function Show_Error(message) {
+	Lobibox.notify('error', {
+		pauseDelayOnHover: true,
+		continueDelayOnInactiveTab: false,
+		position: 'top right',
+		icon: 'bi bi-x-circle',
+		msg: message
+	});
+}
+</script>
 </head>
 
 <body>
@@ -192,7 +210,7 @@ if($fliename=='index.php'){
         <div class="text-center p-3 bg-light rounded">
           <img src="https://placehold.co/110x110" class="rounded-circle p-1 shadow mb-3" width="120" height="120"
             alt="">
-          <h5 class="user-name mb-0 fw-bold"><?php echo $Admin_Username ?></h5>
+          <h5 class="user-name mb-0 fw-bold"><?php echo $config->GetConfig('admin_username') ?></h5>
           <p class="mb-0">超级管理员</p>
         </div>
         <div class="list-group list-group-flush mt-3 profil-menu fw-bold">

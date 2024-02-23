@@ -40,7 +40,7 @@ include './Head.php';//载入头文件
                 </div>
                 <div class="mt-5 d-flex align-items-start justify-content-between">
                   <div class="">
-                    <h3 class="mb-2"><?php echo $Admin_Username ?></h3>
+                    <h3 class="mb-2"><?php echo $config->GetConfig('admin_username') ?></h3>
                     <p class="mb-1">超级管理员</p>
                   </div>
                 </div>

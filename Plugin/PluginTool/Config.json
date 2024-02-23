@@ -1,10 +1,13 @@
 {
     "plugin":{
         "config":{
-            "isopen":true,
             "name":"PluginList",
+            "info":"A Demo Plugin",
             "author":"书迷",
-            "version":"V1.0.0"
+            "version":"V1.0.0",
+            "pluginadmin":true,
+            "pluginadminurl":"Admin.php",
+            "mysql":true
         },
         "listenings":[
             {
