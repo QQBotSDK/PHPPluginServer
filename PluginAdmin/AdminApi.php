@@ -10,7 +10,8 @@
 // +----------------------------------------------------------------------
 //error_reporting(1);//屏蔽报错
 $mode=$_GET["mode"];
-include("../Mysql/Mysql.php");//数据库链接
+include("../Core/Mysql.php");//数据库链接
+include('../Core/Function.php');//函数库
 if($mode!='Login'){
     /*验证Cookie*/
     if(isset($_COOKIE["Login_Token"])){
@@ -37,6 +38,23 @@ if($mode=='Login'){
         $return = array('code' => 401,'message' => '登录信息不匹配');
         exit(json_encode($return));
     }
+}elseif($mode=='DeletePlugin'){
+    @$id=$_GET["id"];
+    @$deleteflie=$_GET["deleteflie"];
+    //读取插件参数
+	$plugin=$config->GetPlugin_I(@$id);
+	if($plugin['code']==401){
+        $return = array('code' => 401,'message' => '插件不存在');
+        exit(json_encode($return));
+	}else{
+	    $sql->delete($prefix.'plugin')->clause(array('id'))->bind(array($id))->run();
+	    if($deleteflie=='true'){
+	        deleteDir('../Plugin/'.$plugin['value']['path']);
+	    }
+        $return = array('code' => 200,'message' => '卸载成功');
+        exit(json_encode($return));
+	}
+	
 }elseif($mode=='SetPlugin'){
     @$id=$_GET["id"];
     @$do=$_GET["do"];
@@ -174,8 +192,12 @@ if($mode=='Login'){
             }else{
                 $pluginadmin='false';
             }
+            
+            $username=Rand1(12);
+            $password=Rand1(24);
+                
     	    //导入插件
-            $result=$sql->insert($prefix.'plugin')->key(array('name','info','path','author','version','pluginadmin','pluginadminurl','auth_mysql','isopen'))->value(array($config_data->plugin->config->name,$config_data->plugin->config->info,$pluginpath,$config_data->plugin->config->author,$config_data->plugin->config->version,$pluginadmin,$config_data->plugin->config->pluginadminurl,$config_data->plugin->config->mysql,'false'))->run();
+            $result=$sql->insert($prefix.'plugin')->key(array('name','info','path','author','version','pluginadmin','pluginadminurl','auth_username','auth_password','auth_mysql','isopen'))->value(array($config_data->plugin->config->name,$config_data->plugin->config->info,$pluginpath,$config_data->plugin->config->author,$config_data->plugin->config->version,$pluginadmin,$config_data->plugin->config->pluginadminurl,$username,$password,$config_data->plugin->config->mysql,'false'))->run();
             if($result["status"]==false){
                 $arr=array('code'=>"400",'msg'=>"数据库错误:插件数据写入异常");
                 exit (json_encode($arr));

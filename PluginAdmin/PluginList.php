@@ -9,7 +9,6 @@
 // | Date: 2024年02月17日
 // +----------------------------------------------------------------------
 include './Head.php';//载入头文件
-include '../Class/Function.php';//函数库
 
 @$page=$_GET["page"];
 
@@ -166,7 +165,7 @@ HTML;
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="#" onclick="SetPlugin('{$i}','{$do}')">{$dotext}插件</a></li>
                   <li><a class="dropdown-item" {$pluginadmin}>插件配置</a></li>
-                  <li><a class="dropdown-item" href="#" onclick="Show_Error('功能暂时没有开发完成')">卸载插件</a></li>
+                  <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#Modal-2-{$i}">卸载插件</a></li>
                 </ul>
               </div>
             </td>
@@ -205,6 +204,29 @@ HTML;
             </div>
           </div>
         </div>
+        
+        <!-- Modal-2 -->
+        <div class="modal fade" id="Modal-2-{$i}" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">插件[{$plugin->name}]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+              您确定要<span style="color:red">卸载</span>这个插件吗
+              <div class="form-check form-switch"> 
+                  <input class="form-check-input" type="checkbox" id="{$i}_deleteflie"> 
+                  <label class="form-check-label" for="flexSwitchCheckChecked">同时删除插件文件</label> 
+              </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">取消</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close" onclick="DeletePlugin_{$i}()">确定</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <script>
         function SetPluginEvent_{$i}() {
@@ -216,7 +238,7 @@ HTML;
         		timeout: 15000, //ajax请求超时时间15s
         		success : function(data) {
         		    if(data.code==200){
-            		    Show_Success('安装成功');
+            		    Show_Success('配置成功');
             		    id=data.id;
             		    stepper1.next();
         		    }else{
@@ -228,6 +250,27 @@ HTML;
               }
         	});
         }
+        
+        function DeletePlugin_{$i}() {
+            var deleteflie=$("#{$i}_deleteflie").get(0).checked;
+        	$.ajax({
+        		type : "GET",
+        		url : "./AdminApi.php?mode=DeletePlugin&id={$i}&deleteflie="+deleteflie,
+        		dataType:"json",
+        		timeout: 15000, //ajax请求超时时间15s
+        		success : function(data) {
+        		    if(data.code==200){
+            		    Show_Success(data.message + '[3秒后刷新]');
+       	                window.setTimeout(Jump, 3000);
+        		    }else{
+        		        Show_Error(data.message);
+        		    }
+        		},
+              error:function(res){
+                  Show_Error('云端数据读取失败！('+res.status+')');
+              }
+        	});
+       	}
         </script>
 HTML;
     }
@@ -376,6 +419,7 @@ HTML;
 }
 
 $nowpage=1;
+$pagehtml='';
 while($nowpage<=$allpage) {
     if($nowpage==$page){
         $pagehtml.=<<<HTML

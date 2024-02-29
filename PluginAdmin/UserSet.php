@@ -74,7 +74,7 @@ function UpdateUserInfo() {
 							<div class="card-body">
 							    <label for="inputEmailAddress" class="form-label">Admin账号</label>
 								<div class="input-group mb-3">
-									<input id="username" type="text" class="form-control" placeholder="新账户" value='<?php echo $Admin_Username;?>' aria-label="Username" aria-describedby="basic-addon1">
+									<input id="username" type="text" class="form-control" placeholder="新账户" value='<?php echo $config->GetConfig('admin_username');?>' aria-label="Username" aria-describedby="basic-addon1">
 								</div>
 							    <label for="inputChoosePassword" class="form-label">原Admin密码</label>
     							<div class="input-group mb-3" id="show_hide_password">

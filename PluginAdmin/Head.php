@@ -8,8 +8,9 @@
 // +----------------------------------------------------------------------
 // | Date: 2024年02月16日
 // +----------------------------------------------------------------------
-error_reporting(0);//屏蔽报错
-include("../Mysql/Mysql.php");//数据库链接
+//error_reporting(0);//屏蔽报错
+include("../Core/Mysql.php");//数据库链接
+include('../Core/Function.php');//函数库
 /*验证Cookie*/
 if(isset($_COOKIE["Login_Token"])){
     $cookie=hash('sha256',$config->GetConfig('admin_username').$config->GetConfig('admin_password'));
@@ -50,30 +51,30 @@ if($fliename=='index.php'){
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PHPQQ机器人框架-插件端-管理后台</title>
   <!--favicon-->
-	<link rel="icon" href="./Assets/Images/Logo.ico" type="image/png">
+	<link rel="icon" href="../Assets/Images/Logo.ico" type="image/png">
 
   <!--plugins-->
-  <link href="./Assets/Plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="./Assets/Plugins/metismenu/metisMenu.min.css">
-  <link rel="stylesheet" type="text/css" href="./Assets/Plugins/metismenu/mm-vertical.css">
-  <link rel="stylesheet" href="./Assets/Plugins/notifications/css/lobibox.min.css">
-  <link rel="stylesheet" href="./Assets/Css/extra-icons.css">
-  <link href="./Assets/Plugins/bs-stepper/css/bs-stepper.css" rel="stylesheet">
+  <link href="../Assets/Plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../Assets/Plugins/metismenu/metisMenu.min.css">
+  <link rel="stylesheet" type="text/css" href="../Assets/Plugins/metismenu/mm-vertical.css">
+  <link rel="stylesheet" href="../Assets/Plugins/notifications/css/lobibox.min.css">
+  <link rel="stylesheet" href="../Assets/Css/extra-icons.css">
+  <link href="../Assets/Plugins/bs-stepper/css/bs-stepper.css" rel="stylesheet">
   
   
   <link rel="stylesheet" href="https://cdn.staticfile.net/select2/4.1.0-rc.0/css/select2.min.css">
   <link rel="stylesheet" href="https://cdn.staticfile.net/select2-bootstrap-5-theme/1.3.0/select2-bootstrap-5-theme.min.css">
   <!--bootstrap css-->
-  <link href="./Assets/Css/bootstrap.min.css" rel="stylesheet">
+  <link href="../Assets/Css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Material+Icons+Outlined" rel="stylesheet">
   <!--main css-->
-  <link href="./Assets/Css/bootstrap-extended.css" rel="stylesheet">
-  <link href="./Assets/Sass/main.css" rel="stylesheet">
-  <link href="./Assets/Sass/dark-theme.css" rel="stylesheet">
-  <link href="./Assets/Sass/semi-dark.css" rel="stylesheet">
-  <link href="./Assets/Sass/bordered-theme.css" rel="stylesheet">
-  <link href="./Assets/Sass/responsive.css" rel="stylesheet">
+  <link href="../Assets/Css/bootstrap-extended.css" rel="stylesheet">
+  <link href="../Assets/Sass/main.css" rel="stylesheet">
+  <link href="../Assets/Sass/dark-theme.css" rel="stylesheet">
+  <link href="../Assets/Sass/semi-dark.css" rel="stylesheet">
+  <link href="../Assets/Sass/bordered-theme.css" rel="stylesheet">
+  <link href="../Assets/Sass/responsive.css" rel="stylesheet">
 <script>
 function Show_Success(message) {
 	Lobibox.notify('success', {
@@ -126,7 +127,7 @@ function Show_Error(message) {
   <!--start primary menu offcanvas-->
   <div class="offcanvas offcanvas-start w-260" data-bs-scroll="true" tabindex="-1" id="offcanvasPrimaryMenu">
     <div class="offcanvas-header border-bottom h-70">
-      <img src="./Assets/Images/Logo.png" height="64" width="64" alt="">
+      <img src="../Assets/Images/Logo.png" height="64" width="64" alt="">
       <a href="javascript:;" class="primaery-menu-close" data-bs-dismiss="offcanvas">
         <i class="material-icons-outlined">close</i>
       </a>
@@ -134,7 +135,7 @@ function Show_Error(message) {
     <div class="offcanvas-body">
       <nav class="sidebar-nav">
         <ul class="metismenu" id="sidenav">
-          <li <?php echo $index ?>>
+          <li <?php echo @$index ?>>
             <a href="./index.php" href="javascript:;">
               <div class="parent-icon"><i class="material-icons-outlined">home</i>
               </div>
@@ -142,27 +143,27 @@ function Show_Error(message) {
             </a>
           </li>
           <li class="menu-label">插件库配置</li>
-          <li <?php echo $plugin ?>>
+          <li <?php echo @$plugin ?>>
             <a href="javascript:;" class="has-arrow">
               <div class="parent-icon"><i class="material-icons-outlined">apps</i>
               </div>
               <div class="menu-title">插件管理</div>
             </a>
             <ul>
-              <li <?php echo $pluginlist ?>><a href="./PluginList.php"><i class="material-icons-outlined">arrow_right</i>插件列表</a>
+              <li <?php echo @$pluginlist ?>><a href="./PluginList.php"><i class="material-icons-outlined">arrow_right</i>插件列表</a>
               </li>       
-              <li <?php echo $uploadplugin ?>><a href="./UploadPlugin.php"><i class="material-icons-outlined">arrow_right</i>导入插件</a>
+              <li <?php echo @$uploadplugin ?>><a href="./UploadPlugin.php"><i class="material-icons-outlined">arrow_right</i>导入插件</a>
               </li>
             </ul>
           </li>
-          <li <?php echo $doc ?>>
+          <li <?php echo @$doc ?>>
             <a href="./Doc.php" href="javascrpt:;">
               <div class="parent-icon"><i class="material-icons-outlined">description</i>
               </div>
               <div class="menu-title">插件开发文档</div>
             </a>
           </li>
-          <li <?php echo $set ?>>
+          <li <?php echo @$set ?>>
             <a href="./Set.php" href="javascrpt:;">
               <div class="parent-icon"><i class="material-icons-outlined">tune</i>
               </div>
@@ -170,14 +171,14 @@ function Show_Error(message) {
             </a>
           </li>
           <li class="menu-label">管理员账户</li>
-          <li <?php echo $userinfo ?>>
+          <li <?php echo @$userinfo ?>>
             <a href="./UserInfo.php" href="javascrpt:;">
               <div class="parent-icon"><i class="material-icons-outlined">person_outline</i>
               </div>
               <div class="menu-title">账户信息</div>
             </a>
           </li>
-          <li <?php echo $userset ?>>
+          <li <?php echo @$userset ?>>
             <a href="./UserSet.php" href="javascrpt:;">
               <div class="parent-icon"><i class="material-icons-outlined">local_bar</i>
               </div>

@@ -9,51 +9,54 @@
 // | Date: 2024年02月17日
 // +----------------------------------------------------------------------
 include './Head.php';//载入头文件
-include '../Class/Function.php';//函数库
-$pluginpath=$_GET['pluginpath'];
-if (file_exists('../Plugin/'.$pluginpath.'/Config.json')) {
+@$pluginpath=$_GET['pluginpath'];
+if (@file_exists('../Plugin/'.$pluginpath.'/Config.json')) {
     //have
-    $config_flie = file_get_contents('../Plugin/'.$pluginpath.'/Config.json');//引入插件配置文件
-    $config_data = json_decode($config_flie);//解析配置文件
-	$plugin=$config->GetPlugin_N($config_data->plugin->config->name);
-	if($plugin['code']==401){
-	    //noinstall
-	    
-        //获取权限列表
-        foreach ($config_data->plugin->listenings as $listening) {
-            $eventname=Get_Event_Name($listening->name);
-            $listeningevent.=<<<HTML
-<div class="form-check form-switch"> 
-    <input class="form-check-input" type="checkbox" id="{$listening->name}" checked> 
-    <label class="form-check-label" for="flexSwitchCheckChecked">{$eventname}</label> 
-</div>
+    @$path=str_replace("../Plugin/","",$pluginpath);
+    $plugin=$config->GetPlugin_P($path);
+    if($plugin['code']==401){
+        //PathNoInstall
+        @$config_flie = file_get_contents('../Plugin/'.$pluginpath.'/Config.json');//引入插件配置文件
+        @$config_data = json_decode($config_flie);//解析配置文件
+    	@$plugin=$config->GetPlugin_N($config_data->plugin->config->name);
+    	if($plugin['code']==401){
+    	    //noinstall
+    	    
+            //获取权限列表
+            foreach ($config_data->plugin->listenings as $listening) {
+                @$eventname=Get_Event_Name($listening->name);
+                @$listeningevent.=<<<HTML
+    <div class="form-check form-switch"> 
+        <input class="form-check-input" type="checkbox" id="{$listening->name}" checked> 
+        <label class="form-check-label" for="flexSwitchCheckChecked">{$eventname}</label> 
+    </div>
 HTML;
-            $js1.=<<<JS
-    var {$listening->name}=$("#{$listening->name}").get(0).checked;
-    //console.log({$listening->name})
-    
-JS;
-            $js2.=<<<JS
-+"&{$listening->name}="+{$listening->name}
-JS;
-        }
+                @$js1.=<<<JS
+        var {$listening->name}=$("#{$listening->name}").get(0).checked;
+        //console.log({$listening->name})
         
-        //MYSQL权限
-        if($config_data->plugin->config->mysql==true){
-            $listeningevent.=<<<HTML
-<div class="form-check form-switch"> 
-    <input class="form-check-input" type="checkbox" id="mysql" checked> 
-    <label class="form-check-label" for="flexSwitchCheckChecked">Mysql数据库权限<span style="color:red">*敏感权限，请确定您可以信任该插件*</span></label> 
-</div>
+JS;
+                @$js2.=<<<JS
+    +"&{$listening->name}="+{$listening->name}
+JS;
+            }
+            
+            //MYSQL权限
+            if($config_data->plugin->config->mysql==true){
+                @$listeningevent.=<<<HTML
+    <div class="form-check form-switch"> 
+        <input class="form-check-input" type="checkbox" id="mysql" checked> 
+        <label class="form-check-label" for="flexSwitchCheckChecked">Mysql数据库权限<span style="color:red">*敏感权限，请确定您可以信任该插件*</span></label> 
+    </div>
 HTML;
-            $js1.=<<<JS
-    var mysql=$("#mysql").get(0).checked;
+                @$js1.=<<<JS
+        var mysql=$("#mysql").get(0).checked;
 
 JS;
-            $js2.=<<<JS
-+"&mysql="+mysql
+                @$js2.=<<<JS
+    +"&mysql="+mysql
 JS;
-        }
+            }
 ?>
 <script>
 function InstallPlugin() {
@@ -249,11 +252,16 @@ function EndInstall() {
   </main>
   <!--end main wrapper-->
 <?php
-	}else{
-	    //install
+    	}else{
+    	    //install
+            $message='不允许重复安装同名插件，如需要安装请修改插件名或者卸载同名插件';
+    	    goto returnerror;
+    	}
+    }else{
+        //PathInstall
         $message='插件已经安装过了，不允许覆盖安装，如需要覆盖安装请选择[重载插件]';
 	    goto returnerror;
-	}
+    }
 } else {
     //no
     if (is_dir('../Plugin/'.$pluginpath)) {
@@ -305,17 +313,7 @@ returnerror:
   <!--end main wrapper-->
 <?php
 }
-
-//加载Plugin下的所有的插件
-$list = glob('../Plugin/*');
-foreach($list as $flie){
-}
-if(!$loadplugin){
-    $loadplugin='<option value="noplugin">目前没有可载入的插件，如果需要导入插件请选择导入插件</option>';
-}
 ?>
-
-
 <?php
 include './Footer.php';//载入页尾文件
 ?>

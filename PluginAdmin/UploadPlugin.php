@@ -9,14 +9,6 @@
 // | Date: 2024年02月23日
 // +----------------------------------------------------------------------
 include './Head.php';//载入头文件
-function Rand1($length=8) {
-    $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    $password = '';
-    for ( $i = 0; $i < $length; $i++ ){
-        $password .= $chars[ mt_rand(0, strlen($chars) - 1) ];
-    }
-    return $password;
-}
 if($_FILES['plugin']){
     header("Content-Type: text/html; charset=UTF-8");
     $flie=$_FILES['plugin'];

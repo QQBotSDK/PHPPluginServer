@@ -14,7 +14,8 @@ $list = glob('../Plugin/*');
 foreach($list as $flie){
     $config_flie = file_get_contents($flie.'/Config.json');//引入插件配置文件
     $config_data = json_decode($config_flie);//解析配置文件
-	$plugin=$config->GetPlugin_N($config_data->plugin->config->name);
+    $path=str_replace("../Plugin/","",$flie);
+    $plugin=$config->GetPlugin_P($path);
 	if($plugin['code']==401){
 	    $path=str_replace("../Plugin/","",$flie);
 	    $loadplugin.='<option value="'.$path.'">'.$config_data->plugin->config->name.'</option>';

@@ -93,14 +93,20 @@ $LogCount=0;//临时
 				</div>
 				<div class="d-flex align-items-center">
 					<div class="flex-grow-1 ms-3">
+						<h5 class="mt-0">本项目官网</h5>
+						<p class="mb-0"><a href="https://bot.ssyapi.com">点击前往</a></p>
+					</div>
+				</div>
+				<div class="d-flex align-items-center">
+					<div class="flex-grow-1 ms-3">
 						<h5 class="mt-0">本项目Github地址</h5>
-						<p class="mb-0"><a href="https://github.com/QQBotSDK/PHPPulginServer">点击前往</a></p>
+						<p class="mb-0"><a href="https://github.com/QQBotSDK/PHPPluginServer">点击前往</a></p>
 					</div>
 				</div>
 				<div class="d-flex align-items-center">
 					<div class="flex-grow-1 ms-3">
 						<h5 class="mt-0">本项目Gitee地址</h5>
-						<p class="mb-0">暂无</p>
+						<p class="mb-0"><a href="https://gitee.com/QQBotSDK/PHPPluginServer">点击前往</a></p>
 					</div>
 				</div>
 				<div class="d-flex align-items-center">

@@ -32,21 +32,21 @@ if(isset($_COOKIE["Login_Token"])){
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PHPQQ机器人框架-插件端-管理后台-登录</title>
   <!--favicon-->
-	<link rel="icon" href="./Assets/Images/Logo.ico" type="image/png">
+	<link rel="icon" href="../Assets/Images/Logo.ico" type="image/png">
 
   <!--plugins-->
-  <link href="./Assets/Plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="./Assets/Plugins/metismenu/metisMenu.min.css">
-  <link rel="stylesheet" type="text/css" href="./Assets/Plugins/metismenu/mm-vertical.css">
-  <link rel="stylesheet" href="./Assets/Plugins/notifications/css/lobibox.min.css">
+  <link href="../Assets/Plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../Assets/Plugins/metismenu/metisMenu.min.css">
+  <link rel="stylesheet" type="text/css" href="../Assets/Plugins/metismenu/mm-vertical.css">
+  <link rel="stylesheet" href="../Assets/Plugins/notifications/css/lobibox.min.css">
   <!--bootstrap css-->
-  <link href="./Assets/Css/bootstrap.min.css" rel="stylesheet">
+  <link href="../Assets/Css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
   <!--main css-->
-  <link href="./Assets/Css/bootstrap-extended.css" rel="stylesheet">
-  <link href="./Assets/Sass/main.css" rel="stylesheet">
-  <link href="./Assets/Sass/dark-theme.css" rel="stylesheet">
-  <link href="./Assets/Sass/responsive.css" rel="stylesheet">
+  <link href="../Assets/Css/bootstrap-extended.css" rel="stylesheet">
+  <link href="../Assets/Sass/main.css" rel="stylesheet">
+  <link href="../Assets/Sass/dark-theme.css" rel="stylesheet">
+  <link href="../Assets/Sass/responsive.css" rel="stylesheet">
 
 <script>
 function Show_Success(message) {
@@ -143,7 +143,7 @@ function Login() {
            <div class="col-12 col-md-8 col-lg-6 col-xl-5 col-xxl-4 mx-auto">
             <div class="card rounded-4">
               <div class="card-body p-5">
-                  <img src="./Assets/Images/Logo.png" class="mb-4" width="145" alt="">
+                  <img src="../Assets/Images/Logo.png" class="mb-4" width="145" alt="">
                   <h4 class="fw-bold">PHPQQ机器人框架-插件端</h4>
                   <p class="mb-0">管理后台-登录</p>
 
@@ -180,19 +180,19 @@ function Login() {
      </div>
       
   <!--plugins-->
-  <!--<script src="./Assets/Plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>-->
-  <!--<script src="./Assets/Plugins/metismenu/metisMenu.min.js"></script>-->
+  <!--<script src="../Assets/Plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>-->
+  <!--<script src="../Assets/Plugins/metismenu/metisMenu.min.js"></script>-->
   
   <!--bootstrap js-->
-  <!--<script src="./Assets/Js/bootstrap.bundle.min.js"></script>-->
+  <!--<script src="../Assets/Js/bootstrap.bundle.min.js"></script>-->
 
   <!--plugins-->
-    <script src="./Assets/Js/jquery.min.js"></script>
+    <script src="../Assets/Js/jquery.min.js"></script>
       <!--notification js -->
-    	<script src="./Assets/Plugins/notifications/js/lobibox.min.js"></script>
-    	<script src="./Assets/Plugins/notifications/js/notifications.min.js"></script>
-    	<!--<script src="./Assets/Plugins/notifications/js/notification-custom-script.js"></script>-->
-      <script src="./Assets/Js/main.js"></script>
+    	<script src="../Assets/Plugins/notifications/js/lobibox.min.js"></script>
+    	<script src="../Assets/Plugins/notifications/js/notifications.min.js"></script>
+    	<!--<script src="../Assets/Plugins/notifications/js/notification-custom-script.js"></script>-->
+      <script src="../Assets/Js/main.js"></script>
       
     <script>
       $(document).ready(function () {

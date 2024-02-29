@@ -6,51 +6,58 @@
 // +----------------------------------------------------------------------
 // | Author:书迷  <jsrcode@qq.com>
 // +----------------------------------------------------------------------
-// | Date: 2024年02月23日
+// | Date: 2024年02月26日
 // +----------------------------------------------------------------------
-//include './Config.php';
-
-function Include_Plugin($path,$event,$data,$guild,$group,$md,$bot,$guilduser){
-    require $path;
-}
-
-include './Mysql/Mysql.php';//数据库链接
-if($config->GetConfig('debug_mode')=='false'){
-    error_reporting(0);
-    $mode='';
-}else{//Debug模式
-    $mode='[Debug模式]';
-}
-
 include './Version.php';//版本文件
-include './Class/Function.php';//函数库
-include './Class/Http.Class.php';//Http操作库
-include './Class/Secret.Class.php';//Secret获取工具
-include './Class/Bot.Class.php';//BotApi库
-include './Class/Group.Class.php';//群Api库
-include './Class/Guild.Class.php';//频道Api库
-include './Class/GuildUser.Class.php';//频道用户Api库
-include './Class/MarkDown.Class.php';//MrakDown构建库
+include './Core/Function.php';//函数库
+include './Core/Api_Class/Http.Class.php';//Http操作库
+include './Core/Api_Class/Secret.Class.php';//Secret获取工具
+include './Core/Api_Class/Bot.Class.php';//BotApi库
+include './Core/Api_Class/Group.Class.php';//群Api库
+include './Core/Api_Class/Guild.Class.php';//频道Api库
+include './Core/Api_Class/GuildUser.Class.php';//频道用户Api库
+include './Core/Api_Class/MarkDown.Class.php';//MrakDown构建库
+include './Core/Mysql.php';//数据库链接
+if($config->GetConfig('debug_mode')=='false'){//非Debug模式
+    error_reporting(0);
+    $mode='';//提示
+}else{//Debug模式
+    $mode='[Debug模式]';//提示
+}
 
 $content = file_get_contents('php://input');//获取服务端提供的参数
 
 if(empty($content)){
-    header('Content-Type: application/json; charset=utf8');
-    echo $mode."[当前插件库版本".$Version."]插件库服务正常".PHP_EOL;
-    exit;
+	if($_SERVER['REQUEST_METHOD'] === 'POST'){
+        //返回
+        $return = array (
+            'code' => 400,//状态码
+            'message' => $mode.'插件库服务正常',//返回
+            'server_version' => $Version,//插件库版本
+        );
+        echo json_encode($return);//返回数据
+        exit();
+	}else{
+	    echo $mode."[当前插件库版本".$Version."]插件库服务正常".PHP_EOL;
+	    exit();
+	}
 }
 
 //插件库密钥鉴权
 $HTTP_Plugin_Key=print_r($_SERVER['HTTP_PLUGINKEY'],true);
-if ($HTTP_Plugin_Key!=$config->GetConfig('plugin_key'))
-{
-	die("\033[47;31m[密钥验证失败]请检查您的插件库密钥\033[0m".PHP_EOL);
+if ($HTTP_Plugin_Key!=$config->GetConfig('plugin_key')){
+    //返回
+    $return = array (
+        'code' => 401,//状态码
+        'message' => '[密钥验证失败]请检查您的插件库密钥',//返回
+        'server_version' => $Version,//插件库版本
+    );
+    echo json_encode($return);//返回数据
+    exit();
 }
 
 header('content-type:application/json');
 $Data=json_decode($content,true);
-
-
 
 //组装鉴权数组
 $botid = print_r($_SERVER['HTTP_BOTID'],true);
@@ -75,17 +82,6 @@ $guilduser=new GuildUserAPI($url,$headers);
 $bot=new BotAPI($url,$headers);
 //引入Mrakdown类
 $md=new MarkDown();
-
-//重置$authorization和$headers等敏感数据避免恶意插件窃取数据
-// $authorization='';
-// $headers='';
-// //$botid='';
-// $secret='';
-// $_SERVER['HTTP_BOTID']='';
-// $_SERVER['HTTP_SECRET']='';
-// $_SERVER['HTTP_URL']='';
-// $_SERVER['HTTP_PLUGINKEY']='';
-// $sql=""; 
 
 //处理消息
 $event = $Data["t"];
@@ -143,46 +139,53 @@ if($event=='AT_MESSAGE_CREATE' or $event=='MESSAGE_CREATE'){//文字子频道消
     ];
     $data=json_decode(json_encode($data));//转换为Object
 }else{
-    header('Content-Type: application/json; charset=utf8');
-    echo "[Event:".$event."]推送了不受支持的事件".PHP_EOL;
+    //返回
+    $return = array (
+        'code' => 402,//状态码
+        'message' => '推送了不受支持的事件',//返回
+        'server_version' => $Version,//插件库版本
+        'event' => $event//不支持的事件
+    );
+    echo json_encode($return);//返回数据
     exit;
 }
- 
-$list=$config->Get_Plugin_List_Event($event)['value'];
-foreach($list as $plugin){
-    $plugininfo=$config->GetPlugin_I($plugin['pluginid']);
-    //引入插件主文件
-    Include_Plugin('./Plugin/'.$plugininfo['value']['path'].'/Main.php',$event,$data,$guild,$group,$md,$bot,$guilduser);
-    //require './Plugin/'.$plugininfo['value']['path'].'/Main.php';
-    break;
+
+//载入插件函数
+function Include_Plugin($path,$event,$data,$guild,$group,$md,$bot,$guilduser,$conn=false,$sql=false){
+    require $path;
 }
 
-//加载Plugin下的所有的插件目录
-// $list = glob('./Plugin/*');
-// foreach($list as $file){
-//     $config = file_get_contents($file.'/Config.json');//引入插件配置文件
-//     $config_data = json_decode($config);//解析配置文件
-//     //判断插件是否开启
-//     if($config_data->plugin->config->isopen==true){
-//         foreach ($config_data->plugin->listenings as $listening) {
-//             //判断插件是否有权限接受消息
-//             if($listening->name==$event){
-//                 //引入插件主文件
-//                 require $file.'/Main.php';
-//                 break;
-//             }
-//         }
-//     }
-// }
+$plugin_list=[];
+//载入插件列表
+$list=$config->Get_Plugin_List_Event($event)['value'];
+foreach($list as $plugin){
+    //读取插件详情
+    $plugininfo=$config->GetPlugin_I($plugin['pluginid']);
+    //读取是否有Mysql权限
+    $mysql_check=$config->Get_Plugin_Event($plugin['pluginid'],'mysql');
+    if($mysql_check['code']=='200'){
+        $r_conn=$conn;
+        $r_sql=$sql;
+    }else{
+        $r_conn=false;
+        $r_sql=false;
+    }
+    $plugin_list[]=$plugininfo['value']['name'];
+    //载入插件
+    Include_Plugin('./Plugin/'.$plugininfo['value']['path'].'/Main.php',$event,$data,$guild,$group,$md,$bot,$guilduser,$r_conn,$r_sql);
+    break;
+}
 
 //整合日志
 $plugin_return=array_merge($group->Get_Plugin_Return(),$guild->Get_Plugin_Return());
 
 //返回
-$return = array 
-(
+$return = array (
+    'code' => 200,//状态码
+    'message' => '成功',//返回
+    'plugin_list' => $plugin_list,//触发的插件列表
     'server_version' => $Version,//插件库版本
     'plugin_return' => $plugin_return//插件库的返回数据
 );
-echo json_encode($return);
+echo json_encode($return);//返回日志数据
 ?>

@@ -1,1 +1,0 @@
-{"plugin":{"config":{"isopen":false,"name":"GuildList","info":"A GuildList Demo Plugin","author":"书迷","version":"V1.0.0","pluginadmin":false,"pluginadminurl":"","mysql":true},"listenings":[{"name":"AT_MESSAGE_CREATE"},{"name":"MESSAGE_CREATE"}]}}

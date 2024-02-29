@@ -54,25 +54,25 @@
   </div>
   <!--start switcher-->
   <!--bootstrap js-->
-  <script src="./Assets/Js/bootstrap.bundle.min.js"></script>
+  <script src="../Assets/Js/bootstrap.bundle.min.js"></script>
 
   <!--plugins-->
-  <script src="./Assets/Js/jquery.min.js"></script>
+  <script src="../Assets/Js/jquery.min.js"></script>
   <!--plugins-->
-  <script src="./Assets/Plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
-  <script src="./Assets/Plugins/metismenu/metisMenu.min.js"></script>
-  <script src="./Assets/Plugins/apexchart/apexcharts.min.js"></script>
-  <script src="./Assets/Js/index.js"></script>
-  <script src="./Assets/Plugins/peity/jquery.peity.min.js"></script>
+  <script src="../Assets/Plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+  <script src="../Assets/Plugins/metismenu/metisMenu.min.js"></script>
+  <script src="../Assets/Plugins/apexchart/apexcharts.min.js"></script>
+  <script src="../Assets/Js/index.js"></script>
+  <script src="../Assets/Plugins/peity/jquery.peity.min.js"></script>
   
-  <script src="./Assets/Plugins/bs-stepper/js/bs-stepper.min.js"></script>
-	<script src="./Assets/Plugins/bs-stepper/js/main.js"></script>
+  <script src="../Assets/Plugins/bs-stepper/js/bs-stepper.min.js"></script>
+	<script src="../Assets/Plugins/bs-stepper/js/main.js"></script>
 	
   <!--notification js -->
-	<script src="./Assets/Plugins/notifications/js/lobibox.min.js"></script>
-	<script src="./Assets/Plugins/notifications/js/notifications.min.js"></script>
+	<script src="../Assets/Plugins/notifications/js/lobibox.min.js"></script>
+	<script src="../Assets/Plugins/notifications/js/notifications.min.js"></script>
   <script src="https://cdn.staticfile.net/select2/4.1.0-rc.0/js/select2.min.js"></script>
-	<script src="./Assets/Plugins/select2/js/select2-custom.js"></script>
+	<script src="../Assets/Plugins/select2/js/select2-custom.js"></script>
   <script>
     $(".data-attributes span").peity("donut")
 	</script>
@@ -98,7 +98,7 @@
 			$('[data-bs-toggle="tooltip"]').tooltip();
 		})
 	</script>
-  <script src="./Assets/Js/main.js"></script>
+  <script src="../Assets/Js/main.js"></script>
 
 </body>
 

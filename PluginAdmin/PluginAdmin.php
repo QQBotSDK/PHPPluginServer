@@ -11,12 +11,13 @@
 include './Head.php';//载入头文件
 include './Footer.php';//载入页尾文件
 $id=$_GET['id'];
-function GetPluginAdmin($id){
+function GetPluginAdmin($config,$id){
     $plugin=$config->GetPlugin_I($id);
     if($plugin['code']==200){
         if($plugin['value']['pluginadmin']=='true'){
             $code=200;
-            $adminurl=$plugin['value']['path'].'/'.$plugin['value']['pluginadminurl'];
+            $adminurl='../Plugin/'.$plugin['value']['path'].'/'.$plugin['value']['pluginadminurl'];
+            $auth=base64_encode($plugin['value']['auth_username'].'//'.$plugin['value']['auth_password']);
         }else{
             $code=400;
             $adminurl="该插件没有独立管理页面";
@@ -25,9 +26,9 @@ function GetPluginAdmin($id){
         $code=400;
         $adminurl="插件ID错误";
     }
-    return array("code"=>$code,"adminurl"=>$adminurl);
+    return array("code"=>$code,"adminurl"=>$adminurl,"auth"=>$auth);
 }
-$arr=GetPluginAdmin($id);
+$arr=GetPluginAdmin($config,$id);
 if($arr['code']!=200){
 ?>
   <!--start main wrapper-->
@@ -40,7 +41,7 @@ if($arr['code']!=200){
 ?>
   <!--start main wrapper-->
   <main class="main-wrapper">
-      <iframe src="<?php echo $arr['adminurl'];?>?Login_Token=<?php echo $_COOKIE["Login_Token"];?>" style="border:none;" height="100%" width="100%" title="description">
+      <iframe src="<?php echo $arr['adminurl'];?>?auth=<?php echo $arr['auth'];?>" style="border:none;" height="100%" width="100%" title="description">
   </main>
   <!--end main wrapper-->
 <?php

@@ -16,26 +16,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PHPQQ机器人框架-插件端-安装程序</title>
   <!--favicon-->
-	<link rel="icon" href="../PluginAdmin/Assets/Images/Logo.ico" type="image/png">
+	<link rel="icon" href="../Assets/Images/Logo.ico" type="image/png">
 
   <!--plugins-->
-  <link href="../PluginAdmin/Assets/Plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="../PluginAdmin/Assets/Plugins/metismenu/metisMenu.min.css">
-  <link rel="stylesheet" type="text/css" href="../PluginAdmin/Assets/Plugins/metismenu/mm-vertical.css">
-  <link rel="stylesheet" href="../PluginAdmin/Assets/Plugins/notifications/css/lobibox.min.css">
-  <link href="../PluginAdmin/Assets/Plugins/bs-stepper/css/bs-stepper.css" rel="stylesheet">
+  <link href="../Assets/Plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../Assets/Plugins/metismenu/metisMenu.min.css">
+  <link rel="stylesheet" type="text/css" href="../Assets/Plugins/metismenu/mm-vertical.css">
+  <link rel="stylesheet" href="../Assets/Plugins/notifications/css/lobibox.min.css">
+  <link href="../Assets/Plugins/bs-stepper/css/bs-stepper.css" rel="stylesheet">
   
   <!--bootstrap css-->
-  <link href="../PluginAdmin/Assets/Css/bootstrap.min.css" rel="stylesheet">
+  <link href="../Assets/Css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Material+Icons+Outlined" rel="stylesheet">
   <!--main css-->
-  <link href="../PluginAdmin/Assets/Css/bootstrap-extended.css" rel="stylesheet">
-  <link href="../PluginAdmin/Assets/Sass/main.css" rel="stylesheet">
-  <link href="../PluginAdmin/Assets/Sass/dark-theme.css" rel="stylesheet">
-  <link href="../PluginAdmin/Assets/Sass/semi-dark.css" rel="stylesheet">
-  <link href="../PluginAdmin/Assets/Sass/bordered-theme.css" rel="stylesheet">
-  <link href="../PluginAdmin/Assets/Sass/responsive.css" rel="stylesheet">
+  <link href="../Assets/Css/bootstrap-extended.css" rel="stylesheet">
+  <link href="../Assets/Sass/main.css" rel="stylesheet">
+  <link href="../Assets/Sass/dark-theme.css" rel="stylesheet">
+  <link href="../Assets/Sass/semi-dark.css" rel="stylesheet">
+  <link href="../Assets/Sass/bordered-theme.css" rel="stylesheet">
+  <link href="../Assets/Sass/responsive.css" rel="stylesheet">
 <script>
 
 function Jump() {
@@ -156,7 +156,7 @@ function Install() {
 									<form onSubmit="return false">
 									  <div id="test-vl-1" class="bs-stepper-pane content fade" aria-labelledby="stepper1trigger1">
 										<h5 class="mb-1">系统说明</h5>
-										<iframe src="./About.html"></iframe>
+										<iframe src="./About.html" height="60%" width="150%"></iframe>
 			
 										<div class="row g-3">
 											<div class="col-12">
@@ -315,28 +315,28 @@ HTML;
   <!--end main wrapper-->
 
   <!--bootstrap js-->
-  <script src="../PluginAdmin/Assets/Js/bootstrap.bundle.min.js"></script>
+  <script src="../Assets/Js/bootstrap.bundle.min.js"></script>
 
   <!--plugins-->
-  <script src="../PluginAdmin/Assets/Js/jquery.min.js"></script>
+  <script src="../Assets/Js/jquery.min.js"></script>
   <!--plugins-->
-  <script src="../PluginAdmin/Assets/Plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
-  <script src="../PluginAdmin/Assets/Plugins/metismenu/metisMenu.min.js"></script>
-  <script src="../PluginAdmin/Assets/Plugins/apexchart/apexcharts.min.js"></script>
-  <script src="../PluginAdmin/Assets/Js/index.js"></script>
-  <script src="../PluginAdmin/Assets/Plugins/peity/jquery.peity.min.js"></script>
+  <script src="../Assets/Plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+  <script src="../Assets/Plugins/metismenu/metisMenu.min.js"></script>
+  <script src="../Assets/Plugins/apexchart/apexcharts.min.js"></script>
+  <script src="../Assets/Js/index.js"></script>
+  <script src="../Assets/Plugins/peity/jquery.peity.min.js"></script>
   
-  <script src="../PluginAdmin/Assets/Plugins/bs-stepper/js/bs-stepper.min.js"></script>
-	<script src="../PluginAdmin/Assets/Plugins/bs-stepper/js/main.js"></script>
+  <script src="../Assets/Plugins/bs-stepper/js/bs-stepper.min.js"></script>
+	<script src="../Assets/Plugins/bs-stepper/js/main.js"></script>
 	
   <!--notification js -->
-	<script src="../PluginAdmin/Assets/Plugins/notifications/js/lobibox.min.js"></script>
-	<script src="../PluginAdmin/Assets/Plugins/notifications/js/notifications.min.js"></script>
+	<script src="../Assets/Plugins/notifications/js/lobibox.min.js"></script>
+	<script src="../Assets/Plugins/notifications/js/notifications.min.js"></script>
 	
   <script>
     $(".data-attributes span").peity("donut")
 	</script>
-  <script src="../PluginAdmin/Assets/Js/main.js"></script>
+  <script src="../Assets/Js/main.js"></script>
 
 </body>
 
