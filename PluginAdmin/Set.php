@@ -114,8 +114,8 @@ if($config->GetConfig('debug_mode')=='true'){
      $false='selected=""';
 }
 ?>
-								<option value="false" <?php echo $false; ?>>关闭</option>
-								<option value="true" <?php echo $true; ?>>开启</option>
+								<option value="false" <?php echo @$false; ?>>关闭</option>
+								<option value="true" <?php echo @$true; ?>>开启</option>
 							</select>
 						</div>
                         <div class="col-12">

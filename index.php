@@ -151,7 +151,7 @@ if($event=='AT_MESSAGE_CREATE' or $event=='MESSAGE_CREATE'){//文字子频道消
 }
 
 //载入插件函数
-function Include_Plugin($path,$event,$data,$guild,$group,$md,$bot,$guilduser,$conn=false,$sql=false){
+function Include_Plugin($path,$botid,$event,$data,$guild,$group,$md,$bot,$guilduser,$conn=false,$sql=false){
     require $path;
 }
 
@@ -172,7 +172,7 @@ foreach($list as $plugin){
     }
     $plugin_list[]=$plugininfo['value']['name'];
     //载入插件
-    Include_Plugin('./Plugin/'.$plugininfo['value']['path'].'/Main.php',$event,$data,$guild,$group,$md,$bot,$guilduser,$r_conn,$r_sql);
+    Include_Plugin('./Plugin/'.$plugininfo['value']['path'].'/Main.php',$botid,$event,$data,$guild,$group,$md,$bot,$guilduser,$r_conn,$r_sql);
     break;
 }
 

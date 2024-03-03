@@ -6,8 +6,8 @@
 
 [![Language](https://img.shields.io/badge/language-php-green.svg?style=plastic)](https://www.php.net/)
 [![License](https://img.shields.io/badge/license-Apache-orange.svg?style=plastic)](https://github.com/QQBotSDK/PHPPulginServer/blob/master/LICENSE)
-![PHP](https://img.shields.io/badge/php-8.0%2B-blue)
-![PHP](https://img.shields.io/badge/version-Alpha1.1.0-red)
+![PHP](https://img.shields.io/badge/php-8.1%2B-blue)
+![PHP](https://img.shields.io/badge/version-Alpha1.1.3-red)
 
 _✨ 基于 [QQ开放平台 API](https://bot.q.qq.com/wiki/develop/api-v2/) 实现的机器人框架 ✨_
 
